@@ -39,7 +39,15 @@ def biggest_numbers_horizontal_opp_generator(num_turns):
     return opp_generator(num_turns, baselines.biggest_numbers_horizontal_scaling_agent)
 
 
-def agent_opp_generator(num_turns):
-    env = SuperAutoPetsEnv(random_opp_generator, valid_actions_only=True)
-    model = MaskablePPO.load("train//sapai_ppo", env)
+def agent_opp_generator(num_turns, model):
     return opp_generator(num_turns, agents.ai_agent, model )
+
+class Generator():
+    def __init__(self, model=None, strategy=None) -> None:
+        self.model = model
+        self.strategy = strategy
+
+    def generate(self,num_turns):
+        if self.model:
+            return self.strategy(num_turns, self.model)
+        return self.strategy(num_turns)

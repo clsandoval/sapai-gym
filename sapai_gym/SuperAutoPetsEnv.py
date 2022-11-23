@@ -68,6 +68,8 @@ class SuperAutoPetsEnv(gym.Env):
         self.just_froze = False
 
         self.opponent_generator = opponent_generator
+        #if generation is another agent, only load model once
+
         self.valid_actions_only = valid_actions_only
         self.manual_battles = manual_battles
 
@@ -126,7 +128,7 @@ class SuperAutoPetsEnv(gym.Env):
         self.last_action = None
 
         if not self.manual_battles:
-            self.opponents = self.opponent_generator(25)
+            self.opponents = self.opponent_generator.generate(25)
 
         self.bad_action_reward_sum = 0
 
