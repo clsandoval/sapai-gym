@@ -6,12 +6,12 @@ from sapai_gym.opponent_gen.opponent_generators import *
 
 
 def train_with_masks():
-    opponent_generator = Generator(model=None, strategy=random_opp_generator)
+    opponent_generator = Generator(model=None, strategy=biggest_numbers_horizontal_opp_generator)
     env = SuperAutoPetsEnv(opponent_generator, valid_actions_only=True)
 
     model = MaskablePPO("MlpPolicy", env, verbose=1)
-    model.learn(total_timesteps=1000)
-    evaluate_policy(model, env, n_eval_episodes=20, reward_threshold=1, warn=False)
+    model.learn(total_timesteps=20000)
+    evaluate_policy(model, env, n_eval_episodes=20, reward_threshold=.5, warn=False)
     obs = env.reset()
     model.save("sapai_ppo")
     
@@ -49,7 +49,7 @@ def train_with_masks_against_ai():
         # Predict outcome with model
         action_masks = get_action_masks(env)
         action, _states = model.predict(obs, action_masks=action_masks, deterministic=True)
-
+        
         obs, reward, done, info = env.step(action)
         if done:
             num_games += 1

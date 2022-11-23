@@ -1,9 +1,6 @@
 from unittest import TestCase
-
 from sapai import Team
-from sapai_gym.opponent_gen.opponent_generators import random_opp_generator, biggest_numbers_horizontal_opp_generator, agent_opp_generator
-
-
+from sapai_gym.opponent_gen.opponent_generators import *
 class TestOpponentGenerators(TestCase):
     def test_random_generator(self):
         opponents = random_opp_generator(25)
@@ -17,7 +14,11 @@ class TestOpponentGenerators(TestCase):
         self.assertEqual(scores, sorted_scores)
 
     def test_agent_opponent_generator(self):
-        opponents = agent_opp_generator(25)
+        random_generator = Generator(model=None, strategy=random_opp_generator)
+        env_opp = SuperAutoPetsEnv(random_generator, valid_actions_only=True)
+        model_opp = MaskablePPO.load("train//sapai_ppo", env_opp)
+
+        opponent_generator = Generator(model = model_opp, strategy=agent_opp_generator)
 
 
     @staticmethod
