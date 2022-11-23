@@ -11,12 +11,12 @@ def _do_store_phase(env: SuperAutoPetsEnv, ai):
 
     while True:
         actions = env._avail_actions()
-        chosen_action = ai(env.player, actions)
+        chosen_action = ai(env, actions)
         env.resolve_action(chosen_action)
 
         if SuperAutoPetsEnv._get_action_name(actions[chosen_action]) == "end_turn":
             return
-
+            
 
 def opp_generator(num_turns, ai):
     opps = list()

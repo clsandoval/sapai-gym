@@ -177,8 +177,8 @@ class SuperAutoPetsEnv(gym.Env):
             if shop_slot.slot_type == "food":
                 if shop_slot.cost <= self.player.gold:
                     # Multi-foods (eg. salad, sushi, etc.)
-                    food_effect = data["foods"][shop_slot.item.name]["ability"]["effect"]
-                    if shop_slot.item.name == "food-canned-food" or ("target" in food_effect and "kind" in food_effect["target"] and food_effect["target"]["kind"] == "RandomFriend"):
+                    food_effect = data["foods"][shop_slot.obj.name]["ability"]["effect"]
+                    if shop_slot.obj.name == "food-canned-food" or ("target" in food_effect and "kind" in food_effect["target"] and food_effect["target"]["kind"] == "RandomFriend"):
                         action_num = self.ACTION_BASE_NUM["buy_food_team"] + food_index
                         action_dict[action_num] = (self.player.buy_food, shop_idx)
                     else:
@@ -210,11 +210,11 @@ class SuperAutoPetsEnv(gym.Env):
         for shop_idx, shop_slot in enumerate(self.player.shop):
             if shop_slot.slot_type == "pet":
                 # Can't combine if pet not already on team
-                if shop_slot.item.name not in team_names:
+                if shop_slot.obj.name not in team_names:
                     continue
 
                 if shop_slot.cost <= self.player.gold:
-                    for team_idx in team_names[shop_slot.item.name]:
+                    for team_idx in team_names[shop_slot.obj.name]:
                         action_num = self.ACTION_BASE_NUM["buy_combine"] + (shop_pet_index * self.MAX_TEAM_PETS) + team_idx
                         action_dict[action_num] = (self.player.buy_combine, shop_idx, team_idx)
                 shop_pet_index += 1
@@ -355,9 +355,9 @@ class SuperAutoPetsEnv(gym.Env):
 
     def _get_shop_foods(self):
         food_slots = []
-        for slot in self.player.shop.shop_slots:
+        for slot in self.player.shop.slots:
             if slot.slot_type == "food":
-                food_slots.append((slot.item, slot.cost))
+                food_slots.append((slot.obj, slot.cost))
         return food_slots
 
     def _encode_state(self):
