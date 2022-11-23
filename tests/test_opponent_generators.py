@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from sapai import Team
-from sapai_gym.opponent_gen.opponent_generators import random_opp_generator, biggest_numbers_horizontal_opp_generator
+from sapai_gym.opponent_gen.opponent_generators import random_opp_generator, biggest_numbers_horizontal_opp_generator, agent_opp_generator
 
 
 class TestOpponentGenerators(TestCase):
@@ -15,6 +15,10 @@ class TestOpponentGenerators(TestCase):
 
         # Check that the team is always getting stronger
         self.assertEqual(scores, sorted_scores)
+
+    def test_agent_opponent_generator(self):
+        opponents = agent_opp_generator(25)
+
 
     @staticmethod
     def map_team_to_total_attack_and_health(team: Team):
