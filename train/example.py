@@ -9,8 +9,8 @@ def train_with_masks():
     opponent_generator = Generator(model=None, strategy=biggest_numbers_horizontal_opp_generator)
     env = SuperAutoPetsEnv(opponent_generator, valid_actions_only=True)
 
-    model = MaskablePPO("MlpPolicy", env, verbose=1)
-    model.learn(total_timesteps=20000)
+    model = MaskablePPO("MlpPolicy", env, verbose=1,device='cuda' )
+    model.learn(total_timesteps=1000000)
     evaluate_policy(model, env, n_eval_episodes=20, reward_threshold=.5, warn=False)
     obs = env.reset()
     model.save("sapai_ppo")
