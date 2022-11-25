@@ -15,4 +15,4 @@ def ai_agent(env: SuperAutoPetsEnv, actions: Dict[int,any], model) ->int:
     obs = env._encode_state()
     action_masks = get_action_masks(env)
     action, _states = model.predict(obs, action_masks=action_masks, deterministic=True)
-    return 0
+    return action

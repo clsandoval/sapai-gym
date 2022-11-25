@@ -14,11 +14,11 @@ def train_with_masks():
     for i in range(1000):
         try:
             model.learn(total_timesteps=100000)
+            model.save("sapai_ppo")
         except:
             continue
     evaluate_policy(model, env, n_eval_episodes=20, reward_threshold=.5, warn=False)
     obs = env.reset()
-    model.save("sapai_ppo")
     
     num_games = 0
     while num_games < 100:
@@ -43,11 +43,15 @@ def train_with_masks_against_ai():
     opponent_generator = Generator(model = model_opp, strategy=agent_opp_generator)
 
     env = SuperAutoPetsEnv(opponent_generator, valid_actions_only=True)
-    model = MaskablePPO("MlpPolicy", env, verbose=1)
-    model.learn(total_timesteps=1000)
+    model = MaskablePPO.load("sapai_ppo", env)
+    for i in range(1000):
+        try:
+            model.learn(total_timesteps=100000)
+            model.save("sapai_ppo")
+        except:
+            continue
     evaluate_policy(model, env, n_eval_episodes=20, reward_threshold=1, warn=False)
     obs = env.reset()
-    model.save("sapai_ppo")
     
     num_games = 0
     while num_games < 100:
