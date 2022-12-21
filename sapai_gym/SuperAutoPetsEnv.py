@@ -9,10 +9,11 @@ from sklearn.preprocessing import OneHotEncoder
 
 from sapai import Player, Pet, Food, Battle
 from sapai.data import data
+from rewards import base_reward
 
 
 class SuperAutoPetsEnv(gym.Env):
-    metadata = {'render.modes': ['human']}
+    metadata = {"render.modes": ["human"]}
     MAX_ACTIONS = 213
     ACTION_BASE_NUM = {
         "end_turn": 0,
@@ -35,9 +36,128 @@ class SuperAutoPetsEnv(gym.Env):
     MAX_SHOP_PETS = 6
     # Max number of foods that can be in a shop
     MAX_SHOP_FOODS = 2
-    ALL_PETS = ["pet-ant", "pet-beaver", "pet-beetle", "pet-bluebird", "pet-cricket", "pet-duck", "pet-fish", "pet-horse", "pet-ladybug", "pet-mosquito", "pet-otter", "pet-pig", "pet-sloth", "pet-bat", "pet-crab", "pet-dodo", "pet-dog", "pet-dromedary", "pet-elephant", "pet-flamingo", "pet-hedgehog", "pet-peacock", "pet-rat", "pet-shrimp", "pet-spider", "pet-swan", "pet-tabby-cat", "pet-badger", "pet-blowfish", "pet-caterpillar", "pet-camel", "pet-hatching-chick", "pet-giraffe", "pet-kangaroo", "pet-owl", "pet-ox", "pet-puppy", "pet-rabbit", "pet-sheep", "pet-snail", "pet-tropical-fish", "pet-turtle", "pet-whale", "pet-bison", "pet-buffalo", "pet-deer", "pet-dolphin", "pet-hippo", "pet-llama", "pet-lobster", "pet-monkey", "pet-penguin", "pet-poodle", "pet-rooster", "pet-skunk", "pet-squirrel", "pet-worm", "pet-chicken", "pet-cow", "pet-crocodile", "pet-eagle", "pet-goat", "pet-microbe", "pet-parrot", "pet-rhino", "pet-scorpion", "pet-seal", "pet-shark", "pet-turkey", "pet-cat", "pet-boar", "pet-dragon", "pet-fly", "pet-gorilla", "pet-leopard", "pet-mammoth", "pet-octopus", "pet-sauropod", "pet-snake", "pet-tiger", "pet-tyrannosaurus", "pet-zombie-cricket", "pet-bus", "pet-zombie-fly", "pet-dirty-rat", "pet-chick", "pet-ram", "pet-butterfly", "pet-bee"]
-    ALL_FOODS = ["food-apple", "food-honey", "food-cupcake", "food-meat-bone", "food-sleeping-pill", "food-garlic", "food-salad-bowl", "food-canned-food", "food-pear", "food-chili", "food-chocolate", "food-sushi", "food-melon", "food-mushroom", "food-pizza", "food-steak", "food-milk"]
-    ALL_STATUSES = ["status-weak", "status-coconut-shield", "status-honey-bee", "status-bone-attack", "status-garlic-armor", "status-splash-attack", "status-melon-armor", "status-extra-life", "status-steak-attack", "status-poison-attack"]
+    ALL_PETS = [
+        "pet-ant",
+        "pet-beaver",
+        "pet-beetle",
+        "pet-bluebird",
+        "pet-cricket",
+        "pet-duck",
+        "pet-fish",
+        "pet-horse",
+        "pet-ladybug",
+        "pet-mosquito",
+        "pet-otter",
+        "pet-pig",
+        "pet-sloth",
+        "pet-bat",
+        "pet-crab",
+        "pet-dodo",
+        "pet-dog",
+        "pet-dromedary",
+        "pet-elephant",
+        "pet-flamingo",
+        "pet-hedgehog",
+        "pet-peacock",
+        "pet-rat",
+        "pet-shrimp",
+        "pet-spider",
+        "pet-swan",
+        "pet-tabby-cat",
+        "pet-badger",
+        "pet-blowfish",
+        "pet-caterpillar",
+        "pet-camel",
+        "pet-hatching-chick",
+        "pet-giraffe",
+        "pet-kangaroo",
+        "pet-owl",
+        "pet-ox",
+        "pet-puppy",
+        "pet-rabbit",
+        "pet-sheep",
+        "pet-snail",
+        "pet-tropical-fish",
+        "pet-turtle",
+        "pet-whale",
+        "pet-bison",
+        "pet-buffalo",
+        "pet-deer",
+        "pet-dolphin",
+        "pet-hippo",
+        "pet-llama",
+        "pet-lobster",
+        "pet-monkey",
+        "pet-penguin",
+        "pet-poodle",
+        "pet-rooster",
+        "pet-skunk",
+        "pet-squirrel",
+        "pet-worm",
+        "pet-chicken",
+        "pet-cow",
+        "pet-crocodile",
+        "pet-eagle",
+        "pet-goat",
+        "pet-microbe",
+        "pet-parrot",
+        "pet-rhino",
+        "pet-scorpion",
+        "pet-seal",
+        "pet-shark",
+        "pet-turkey",
+        "pet-cat",
+        "pet-boar",
+        "pet-dragon",
+        "pet-fly",
+        "pet-gorilla",
+        "pet-leopard",
+        "pet-mammoth",
+        "pet-octopus",
+        "pet-sauropod",
+        "pet-snake",
+        "pet-tiger",
+        "pet-tyrannosaurus",
+        "pet-zombie-cricket",
+        "pet-bus",
+        "pet-zombie-fly",
+        "pet-dirty-rat",
+        "pet-chick",
+        "pet-ram",
+        "pet-butterfly",
+        "pet-bee",
+    ]
+    ALL_FOODS = [
+        "food-apple",
+        "food-honey",
+        "food-cupcake",
+        "food-meat-bone",
+        "food-sleeping-pill",
+        "food-garlic",
+        "food-salad-bowl",
+        "food-canned-food",
+        "food-pear",
+        "food-chili",
+        "food-chocolate",
+        "food-sushi",
+        "food-melon",
+        "food-mushroom",
+        "food-pizza",
+        "food-steak",
+        "food-milk",
+    ]
+    ALL_STATUSES = [
+        "status-weak",
+        "status-coconut-shield",
+        "status-honey-bee",
+        "status-bone-attack",
+        "status-garlic-armor",
+        "status-splash-attack",
+        "status-melon-armor",
+        "status-extra-life",
+        "status-steak-attack",
+        "status-poison-attack",
+    ]
 
     def __init__(self, opponent_generator, valid_actions_only, manual_battles=False):
         """
@@ -60,15 +180,21 @@ class SuperAutoPetsEnv(gym.Env):
             assert opponent_generator is not None
 
         self.action_space = spaces.Discrete(self.MAX_ACTIONS)
-        len_obs_space = (len(self.ALL_PETS) + 2 + len(self.ALL_STATUSES)) * 11 + (len(self.ALL_FOODS) + 1) * 2 + 5
-        self.observation_space = spaces.Box(low=0, high=1, shape=(len_obs_space,), dtype=np.uint8)
+        len_obs_space = (
+            (len(self.ALL_PETS) + 2 + len(self.ALL_STATUSES)) * 11
+            + (len(self.ALL_FOODS) + 1) * 2
+            + 5
+        )
+        self.observation_space = spaces.Box(
+            low=0, high=1, shape=(len_obs_space,), dtype=np.uint8
+        )
         self.reward_range = (0, 1)
 
         self.player = Player()
         self.just_froze = False
 
         self.opponent_generator = opponent_generator
-        #if generation is another agent, only load model once
+        # if generation is another agent, only load model once
 
         self.valid_actions_only = valid_actions_only
         self.manual_battles = manual_battles
@@ -90,13 +216,15 @@ class SuperAutoPetsEnv(gym.Env):
         return obs, reward, done, info
 
     def resolve_action(self, action):
-        """ Resolve the action. step() should be used in cases where state is needed to be returned"""
+        """Resolve the action. step() should be used in cases where state is needed to be returned"""
         if not isinstance(action, int):
             # Convert np int to python int
             action = action.item()
         if not self._is_valid_action(action):
             if self.valid_actions_only:
-                raise RuntimeError(f"Environment tried to play invalid action {action}. Valid actions are {self._avail_actions().keys()}")
+                raise RuntimeError(
+                    f"Environment tried to play invalid action {action}. Valid actions are {self._avail_actions().keys()}"
+                )
             # Teach agent to play valid actions
             self.bad_action_reward_sum += self.BAD_ACTION_PENALTY
         else:
@@ -121,8 +249,13 @@ class SuperAutoPetsEnv(gym.Env):
             return False
         return get_action_name(self.last_action) == "reorder"
 
-
-    def reset(self, *, seed: Optional[int] = None, return_info: bool = False, options: Optional[dict] = None,):
+    def reset(
+        self,
+        *,
+        seed: Optional[int] = None,
+        return_info: bool = False,
+        options: Optional[dict] = None,
+    ):
         self.player = Player()
         self.just_froze = False
         self.last_action = None
@@ -134,7 +267,7 @@ class SuperAutoPetsEnv(gym.Env):
 
         return self._encode_state()
 
-    def render(self, mode='human', close=False):
+    def render(self, mode="human", close=False):
         print(self.player)
         print(f"just_froze: {self.just_froze}")
         print(f"just_reordered: {self.just_reordered}")
@@ -142,13 +275,18 @@ class SuperAutoPetsEnv(gym.Env):
 
     def is_done(self):
         # Cap games at 25 turns to prevent infinite loops
-        return self.player.wins >= 10 or self.player.lives <= 0 or self.player.turn >= 25
+        return (
+            self.player.wins >= 10 or self.player.lives <= 0 or self.player.turn >= 25
+        )
 
     def get_reward(self):
         assert 0 <= self.player.wins <= 10
         if self.valid_actions_only:
             assert self.bad_action_reward_sum == 0
-        return self.player.wins / 10 + self.bad_action_reward_sum
+
+        # get reward according to shaping strategy
+        reward = base_reward(self.player)
+        return reward + self.bad_action_reward_sum
 
     def _avail_end_turn(self):
         action_dict = dict()
@@ -180,7 +318,11 @@ class SuperAutoPetsEnv(gym.Env):
                 if shop_slot.cost <= self.player.gold:
                     # Multi-foods (eg. salad, sushi, etc.)
                     food_effect = data["foods"][shop_slot.obj.name]["ability"]["effect"]
-                    if shop_slot.obj.name == "food-canned-food" or ("target" in food_effect and "kind" in food_effect["target"] and food_effect["target"]["kind"] == "RandomFriend"):
+                    if shop_slot.obj.name == "food-canned-food" or (
+                        "target" in food_effect
+                        and "kind" in food_effect["target"]
+                        and food_effect["target"]["kind"] == "RandomFriend"
+                    ):
                         action_num = self.ACTION_BASE_NUM["buy_food_team"] + food_index
                         action_dict[action_num] = (self.player.buy_food, shop_idx)
                     else:
@@ -188,8 +330,16 @@ class SuperAutoPetsEnv(gym.Env):
                         for team_idx, team_slot in enumerate(self.player.team):
                             if team_slot.empty:
                                 continue
-                            action_num = self.ACTION_BASE_NUM["buy_food"] + (food_index * self.MAX_TEAM_PETS) + team_idx
-                            action_dict[action_num] = (self.player.buy_food, shop_idx, team_idx)
+                            action_num = (
+                                self.ACTION_BASE_NUM["buy_food"]
+                                + (food_index * self.MAX_TEAM_PETS)
+                                + team_idx
+                            )
+                            action_dict[action_num] = (
+                                self.player.buy_food,
+                                shop_idx,
+                                team_idx,
+                            )
                 food_index += 1
         return action_dict
 
@@ -217,8 +367,16 @@ class SuperAutoPetsEnv(gym.Env):
 
                 if shop_slot.cost <= self.player.gold:
                     for team_idx in team_names[shop_slot.obj.name]:
-                        action_num = self.ACTION_BASE_NUM["buy_combine"] + (shop_pet_index * self.MAX_TEAM_PETS) + team_idx
-                        action_dict[action_num] = (self.player.buy_combine, shop_idx, team_idx)
+                        action_num = (
+                            self.ACTION_BASE_NUM["buy_combine"]
+                            + (shop_pet_index * self.MAX_TEAM_PETS)
+                            + team_idx
+                        )
+                        action_dict[action_num] = (
+                            self.player.buy_combine,
+                            shop_idx,
+                            team_idx,
+                        )
                 shop_pet_index += 1
 
         return action_dict
@@ -242,8 +400,21 @@ class SuperAutoPetsEnv(gym.Env):
                 continue
 
             for idx0, idx1 in itertools.combinations(value, r=2):
-                indexes = [(0, 1), (0, 2), (0, 3), (0, 4), (1, 2), (1, 3), (1, 4), (2, 3), (2, 4), (3, 4)]
-                action_num = self.ACTION_BASE_NUM["combine"] + indexes.index((idx0, idx1))
+                indexes = [
+                    (0, 1),
+                    (0, 2),
+                    (0, 3),
+                    (0, 4),
+                    (1, 2),
+                    (1, 3),
+                    (1, 4),
+                    (2, 3),
+                    (2, 4),
+                    (3, 4),
+                ]
+                action_num = self.ACTION_BASE_NUM["combine"] + indexes.index(
+                    (idx0, idx1)
+                )
                 action_dict[action_num] = (self.player.combine, idx0, idx1)
 
         return action_dict
@@ -268,16 +439,15 @@ class SuperAutoPetsEnv(gym.Env):
             return {}
 
         team_size = len(self.player.team)
-        offset = self.ACTION_BASE_NUM["reorder"] + sum([math.factorial(k) - 1 for k in range(team_size)])
+        offset = self.ACTION_BASE_NUM["reorder"] + sum(
+            [math.factorial(k) - 1 for k in range(team_size)]
+        )
         perms = itertools.permutations(range(team_size))
 
         # Skip the do-nothing permutation
         next(perms)
 
-        return {
-            offset + k: (self.player.reorder, perm)
-            for k, perm in enumerate(perms)
-        }
+        return {offset + k: (self.player.reorder, perm) for k, perm in enumerate(perms)}
 
     @staticmethod
     def _get_action_name(input_action):
@@ -296,8 +466,26 @@ class SuperAutoPetsEnv(gym.Env):
         # TODO : FREEZE SHOP ITEMS
 
         # Verify no duplicates or incorrectly indexed actions
-        total_action_len = len(end_turn_actions) + len(buy_pet_actions) + len(buy_food_actions) + len(buy_combine_actions) + len(team_combine_actions) + len(sell_actions) + len(roll_actions) + len(reorder_actions)
-        all_avail_actions = {**end_turn_actions, **buy_pet_actions, **buy_food_actions, **buy_combine_actions, **team_combine_actions, **sell_actions, **roll_actions, **reorder_actions}
+        total_action_len = (
+            len(end_turn_actions)
+            + len(buy_pet_actions)
+            + len(buy_food_actions)
+            + len(buy_combine_actions)
+            + len(team_combine_actions)
+            + len(sell_actions)
+            + len(roll_actions)
+            + len(reorder_actions)
+        )
+        all_avail_actions = {
+            **end_turn_actions,
+            **buy_pet_actions,
+            **buy_food_actions,
+            **buy_combine_actions,
+            **team_combine_actions,
+            **sell_actions,
+            **roll_actions,
+            **reorder_actions,
+        }
         assert total_action_len == len(all_avail_actions)
 
         return all_avail_actions
@@ -340,7 +528,9 @@ class SuperAutoPetsEnv(gym.Env):
                 if pet.status == "none":
                     arrays_to_concat.append(np.zeros((len(self.ALL_STATUSES),)))
                 else:
-                    arrays_to_concat.append(self._encode_single(pet.status, self.ALL_STATUSES))
+                    arrays_to_concat.append(
+                        self._encode_single(pet.status, self.ALL_STATUSES)
+                    )
         return arrays_to_concat
 
     def _encode_foods(self, foods):
@@ -381,7 +571,15 @@ class SuperAutoPetsEnv(gym.Env):
 
         # Other player stats
         # Assumptions: Treat max gold as 20. Treat max turn as 25. Treat max cans as 10.
-        other_stats = np.array([self.player.wins / 10, self.player.lives / 10, min(self.player.gold, 20) / 20, min(self.player.turn, 25) / 25, min(self.player.shop.shop_attack, 20) / 20])
+        other_stats = np.array(
+            [
+                self.player.wins / 10,
+                self.player.lives / 10,
+                min(self.player.gold, 20) / 20,
+                min(self.player.turn, 25) / 25,
+                min(self.player.shop.shop_attack, 20) / 20,
+            ]
+        )
 
         all_lists = list()
         all_lists.extend(encoded_team_pets)
@@ -397,6 +595,7 @@ class SuperAutoPetsEnv(gym.Env):
         onehot_encoded = encoder.fit_transform(np_array)
         collapsed = np.sum(onehot_encoded, axis=0)
         return collapsed
+
 
 def get_action_name(k: int) -> str:
     name_val = list(SuperAutoPetsEnv.ACTION_BASE_NUM.items())
