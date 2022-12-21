@@ -12,16 +12,17 @@ class TestOpponentGenerators(TestCase):
         scores = [self.map_team_to_total_attack_and_health(team) for team in opponents]
         sorted_scores = sorted(scores)
 
-        # Check that the team is always getting stronger
+        #Check that the team is always getting stronger
         self.assertEqual(scores, sorted_scores)
 
     def test_agent_opponent_generator(self):
         random_generator = Generator(model=None, strategy=random_opp_generator)
         env_opp = SuperAutoPetsEnv(random_generator, valid_actions_only=True)
-        model_opp = MaskablePPO.load("train//sapai_ppo", env_opp)
+        model_opp = MaskablePPO.load("sapai_ppo", env_opp)
 
         generator = Generator(model = model_opp, strategy=agent_opp_generator)
         opponents = generator.generate(25)
+        print("AI team generations")
         for t in opponents:
             print(t)
 
