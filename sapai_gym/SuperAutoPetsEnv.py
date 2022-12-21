@@ -9,7 +9,7 @@ from sklearn.preprocessing import OneHotEncoder
 
 from sapai import Player, Pet, Food, Battle
 from sapai.data import data
-from rewards import base_reward
+from sapai_gym.rewards import *
 
 
 class SuperAutoPetsEnv(gym.Env):
@@ -285,7 +285,8 @@ class SuperAutoPetsEnv(gym.Env):
             assert self.bad_action_reward_sum == 0
 
         # get reward according to shaping strategy
-        reward = base_reward(self.player)
+        # reward = base_reward(self.player)
+        reward = evolution_augmented_reward(self.player)
         return reward + self.bad_action_reward_sum
 
     def _avail_end_turn(self):

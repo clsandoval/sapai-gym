@@ -3,7 +3,7 @@ import numpy
 
 def count_tiers(player):
     reward = 0
-    for slot in player.teams.slots:
+    for slot in player.team.slots:
         if type(slot).__name__ == "Pet":
             reward += slot.tier
     return reward / 25
@@ -11,7 +11,7 @@ def count_tiers(player):
 
 def count_evolutions(player):
     reward = 0
-    for slot in player.teams.slots:
+    for slot in player.team.slots:
         if type(slot).__name__ == "Pet":
             reward += slot.level
     return reward / 15
