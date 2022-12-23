@@ -1,0 +1,24 @@
+{
+    "os": "Windows-10-10.0.19041-SP0",
+    "python": "3.8.0",
+    "heartbeatAt": "2022-12-21T19:50:18.517624",
+    "startedAt": "2022-12-21T19:50:11.003694",
+    "docker": null,
+    "gpu": "NVIDIA GeForce RTX 3070 Laptop GPU",
+    "gpu_count": 1,
+    "cpu_count": 16,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "train/example.py",
+    "codePath": "train\\example.py",
+    "git": {
+        "remote": "git@github.com:clsandoval/sapai-gym.git",
+        "commit": "4e402659534fae82301d75330ebfcbd103afba53"
+    },
+    "email": "clsandoval@up.edu.ph",
+    "root": "C:/Users/carlos/Desktop/cs/sapai-gym",
+    "host": "LAPTOP-GQB9UKUT",
+    "username": "carlos",
+    "executable": "C:\\Users\\carlos\\AppData\\Local\\Programs\\Python\\Python38\\python.exe"
+}

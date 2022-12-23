@@ -286,7 +286,8 @@ class SuperAutoPetsEnv(gym.Env):
 
         # get reward according to shaping strategy
         # reward = base_reward(self.player)
-        reward = evolution_augmented_reward(self.player)
+        # reward = evolution_augmented_reward(self.player)
+        reward = evolution_tier_augmented_reward(self.player)
         return reward + self.bad_action_reward_sum
 
     def _avail_end_turn(self):

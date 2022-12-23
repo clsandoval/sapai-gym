@@ -14,32 +14,18 @@ def train_with_masks():
     )
     env = SuperAutoPetsEnv(opponent_generator, valid_actions_only=True)
 
-    # model = MaskablePPO("MlpPolicy", env, verbose=1,device='cuda' )
-    model = MaskablePPO.load("sapai_ppo", env)
+    # model = MaskablePPO("MlpPolicy", env, verbose=1, device="cuda")
+    model = MaskablePPO.load("1", env)
     for i in range(10000):
         try:
             model.learn(total_timesteps=50000)
-            model.save("sapai_ppo")
+            model.save("2")
             policy_evaluation = evaluate_policy(
                 model, env, n_eval_episodes=20, reward_threshold=0.5, warn=False
             )
             wandb.log({"avg_reward": policy_evaluation[0]}, step=i)
         except:
             continue
-    obs = env.reset()
-
-    num_games = 0
-    while num_games < 100:
-        # Predict outcome with model
-        action_masks = get_action_masks(env)
-        action, _states = model.predict(
-            obs, action_masks=action_masks, deterministic=True
-        )
-
-        obs, reward, done, info = env.step(action)
-        if done:
-            num_games += 1
-            obs = env.reset()
     env.close()
 
 

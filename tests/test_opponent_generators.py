@@ -20,7 +20,7 @@ class TestOpponentGenerators(TestCase):
     def test_agent_opponent_generator(self):
         random_generator = Generator(model=None, strategy=random_opp_generator)
         env_opp = SuperAutoPetsEnv(random_generator, valid_actions_only=True)
-        model_opp = MaskablePPO.load("1", env_opp)
+        model_opp = MaskablePPO.load("2", env_opp)
 
         generator = Generator(model=model_opp, strategy=agent_opp_generator)
         opponents = generator.generate(25)

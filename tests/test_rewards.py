@@ -10,16 +10,19 @@ class TestRewards(TestCase):
     def test_base_reward(self):
         random_generator = Generator(model=None, strategy=random_opp_generator)
         env = SuperAutoPetsEnv(random_generator, valid_actions_only=True)
+        # model = MaskablePPO.load("2", env)
+        model = MaskablePPO("MlpPolicy", env, verbose=1, device="cuda")
+        num_games = 0
         obs = env.reset()
-        model = MaskablePPO.load("1.zip", env)
-        # Predict outcome with model
-        action_masks = get_action_masks(env)
-        action, _states = model.predict(
-            obs, action_masks=action_masks, deterministic=True
-        )
-
-        obs, reward, done, info = env.step(action)
-        if done:
-            num_games += 1
-            obs = env.reset()
+        while num_games < 10:
+            # Predict outcome with model
+            action_masks = get_action_masks(env)
+            action, _states = model.predict(
+                obs, action_masks=action_masks, deterministic=True
+            )
+            obs, reward, done, info = env.step(action)
+            if done:
+                obs = env.reset()
+                num_games += 1
+                break
         env.close()
