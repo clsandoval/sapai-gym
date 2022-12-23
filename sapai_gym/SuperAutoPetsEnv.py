@@ -207,9 +207,10 @@ class SuperAutoPetsEnv(gym.Env):
 
     def step(self, action):
         self.resolve_action(action)
-
         obs = self._encode_state()
         reward = self.get_reward()
+        if action == 65:
+            reward = 0
         done = self.is_done()
         info = dict()
 
