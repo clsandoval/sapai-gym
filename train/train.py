@@ -41,68 +41,41 @@ def make_env(rank: int, seed: int = 0):
 def main(args):
     """Trains an agent with league training"""
     wandb.init(project="sap-rl")
-    opponent_generator = Generator(
-        model=None, strategy=biggest_numbers_horizontal_opp_generator
-    )
-    env = SuperAutoPetsEnv(opponent_generator, valid_actions_only=True)
-    # Create the vectorized environment
-    # num_cpu = 4  # Number of processes to use
-    # env = SubprocVecEnv([make_env(i) for i in range(num_cpu)])
-    model = MaskablePPO.load(os.path.join(MODEL_DIR, "3"), env)
-    # model = MaskablePPO("MlpPolicy", env, verbose=1, device="cuda")
-    for i in range(10000):
-        try:
-            model.learn(total_timesteps=50000)
-            model.save(os.path.join(MODEL_DIR, "3"))
-            policy_evaluation = evaluate_policy(
-                model, env, n_eval_episodes=20, reward_threshold=0.5, warn=False
-            )
-            wandb.log({"avg_reward": policy_evaluation[0]}, step=i)
-        except:
-            continue
-    env.close()
-
-
-def main(args):
-    """Trains an agent with league training"""
-    wandb.init(project="sap-rl")
-    opponent_generator = Generator(
-        model=None, strategy=biggest_numbers_horizontal_opp_generator
-    )
-    # Create the vectorized environment
-    # num_cpu = 4  # Number of processes to use
-    # env = SubprocVecEnv([make_env(i) for i in range(num_cpu)])
-    # model = MaskablePPO("MlpPolicy", env, verbose=1, device="cuda")
     model_evals = [0 for i in range(20)]
-    model = MaskablePPO.load(os.path.join(MODEL_DIR, "init"), env)
     for i in range(10000):
         try:
-            # train agent against top 20 recent performing agents
             model_path = os.path.join(MODEL_DIR, "{}".format(i % 20))
-            env_opp = SuperAutoPetsEnv(
-                biggest_numbers_horizontal_opp_generator, valid_actions_only=True
-            )
+
+            # train agent against top 20 recent performing agents
+            # initialize self play environments with ai generators
+            random_generator = Generator(model=None, strategy=random_opp_generator)
+            env_opp = SuperAutoPetsEnv(random_generator, valid_actions_only=True)
             model_opp = MaskablePPO.load(model_path, env_opp)
             opponent_generator = Generator(
                 model=model_opp, strategy=agent_opp_generator
             )
+
+            # initialize main agent and train with 50k steps
             env = SuperAutoPetsEnv(opponent_generator, valid_actions_only=True)
+            model = MaskablePPO.load(os.path.join(MODEL_DIR, "current"), env)
             model.learn(total_timesteps=50000)
             policy_evaluation = evaluate_policy(
                 model, env, n_eval_episodes=20, reward_threshold=0.5, warn=False
             )
-            # decide what agents to keep and drop from top 20 list
             eval = policy_evaluation[0]
+            wandb.log({"avg_reward": eval}, step=i)
+
+            # decide what agents to keep and drop from top 20 list
             model_evals.append(eval)
             model_evals.sort()
             model_evals = model_evals[1:]
             for val, idx in enumerate(model_evals):
                 if val == eval:
-                    wandb.log({"avg_reward": eval}, step=i)
+                    print("Replacing model{} with an eval score of {}".format(idx, val))
                     model.save(model_path)
+            model.save(os.path.join(MODEL_DIR, "current"))
         except:
             continue
-    env.close()
 
 
 if __name__ == "__main__":
